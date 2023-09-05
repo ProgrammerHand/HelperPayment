@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using HelperPayment.Core;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace HelperPayment.Infrastructure.DAL
 {
@@ -13,7 +13,7 @@ namespace HelperPayment.Infrastructure.DAL
         {
             services.Configure<ServerOptions>(configuration.GetRequiredSection(OptionsSectionName));
             var DbOptions = configuration.GetOptions<ServerOptions>(OptionsSectionName);
-            services.AddDbContext<HelperPaymentDbContext>(x => x.UseSqlServer(DbOptions.ConnectionString));
+            services.AddDbContext<HelperDbContext>(x => x.UseSqlServer(DbOptions.ConnectionString));
             services.AddHostedService<DatabaseAutoMigration>();
             return services;
         }

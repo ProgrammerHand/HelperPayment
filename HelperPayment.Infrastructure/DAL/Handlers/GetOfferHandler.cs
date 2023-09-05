@@ -10,9 +10,9 @@ namespace Helper.Infrastructure.DAL.Handlers
 {
     internal class GetOfferHandler : IQueryHandler<GetOffer, OfferDto>
     {
-        private readonly HelperPaymentDbContext _context;
+        private readonly HelperDbContext _context;
 
-        public GetOfferHandler(HelperPaymentDbContext DbContext) => _context = DbContext;
+        public GetOfferHandler(HelperDbContext DbContext) => _context = DbContext;
         public async Task<OfferDto> HandleAsync(GetOffer query)
         {
             var offerId = new OfferId(query.Id);

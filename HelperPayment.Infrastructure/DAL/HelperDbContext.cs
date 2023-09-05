@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HelperPayment.Infrastructure.DAL
 {
-    public class HelperPaymentDbContext : DbContext
+    public class HelperDbContext : DbContext
     {
         private readonly IClockCustom _clock;
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
-        public HelperPaymentDbContext(DbContextOptions<HelperPaymentDbContext> options, IClockCustom clock) : base(options)
+        public HelperDbContext(DbContextOptions<HelperDbContext> options, IClockCustom clock) : base(options)
         {
             _clock = clock;
         }

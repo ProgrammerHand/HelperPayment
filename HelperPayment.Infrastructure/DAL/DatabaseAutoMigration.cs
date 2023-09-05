@@ -15,7 +15,7 @@ namespace HelperPayment.Infrastructure.DAL
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<HelperPaymentDbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<HelperDbContext>();
             if (dbContext.Database.IsRelational())
                 await dbContext.Database.MigrateAsync(cancellationToken);
         }

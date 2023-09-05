@@ -1,5 +1,6 @@
 ﻿using HelperPayment.Application.Abstraction.Commands;
 using HelperPayment.Application.Abstraction.Queries;
+using HelperPayment.Application.Invoice.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -19,10 +20,11 @@ namespace HelperPayment.Controllers
                 _queryDispatcher = queryDispatcher;
             }
 
-            [HttpPost(""), Authorize]
-            public async Task<ActionResult> issueInvoice(CreateInquiry command)
+            [HttpPost("")]
+            public async Task<ActionResult> IssueInvoice(CreateInvoice command)
             {
-                await _commandDispatcher.SendAsync();
+                await _commandDispatcher.SendAsync(command);
+                return Ok();
             }
         }
 }

@@ -1,6 +1,4 @@
-﻿using HelperPayment.Core.Invoice.ValueObjects;
-
-namespace HelperPayment.Core.Invoice
+﻿namespace HelperPayment.Core.Invoice
 {
     public class Invoice
     {
@@ -13,9 +11,23 @@ namespace HelperPayment.Core.Invoice
         public bool IsDeleted { get; private set; }
         public DateTime? DeletedAt { get; private set; }
         
-        public Invoice()
+        private Invoice()
         {
             
+        }
+
+        private Invoice(Offer.Offer offer, InvoiceId id)
+        {
+            Id = id;
+            PaymentDate = (DateTime)offer.PaymentDate;
+            Price = offer.Price;
+
+        }
+
+        public static Invoice CreateInvoice(Offer.Offer offer) 
+        {
+            var id = Guid.NewGuid();
+            return new Invoice(offer, id);
         }
 
     }

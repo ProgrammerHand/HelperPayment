@@ -2,7 +2,7 @@
 using HelperPayment.Application.Abstraction.Events;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application
+namespace HelperPayment.Application
 {
     public static class Extensions
     {

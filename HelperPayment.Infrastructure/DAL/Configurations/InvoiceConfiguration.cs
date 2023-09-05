@@ -1,12 +1,6 @@
 ﻿using HelperPayment.Core.Invoice;
-using HelperPayment.Core.Offer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HelperPayment.Infrastructure.DAL.Configurations
 {
@@ -16,6 +10,7 @@ namespace HelperPayment.Infrastructure.DAL.Configurations
         {
             builder.ToTable("Invoices", "payments");
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasConversion(x => x.Value, x => new InvoiceId(x));
             builder.Property(x => x.RowVersion).IsRowVersion();
         }
     }

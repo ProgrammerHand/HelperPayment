@@ -5,8 +5,8 @@ namespace HelperPayment.Infrastructure.DAL.Repositories
 {
     public class OfferRepository : IOfferRepository
     {
-        private readonly HelperPaymentDbContext _context;
-        public OfferRepository(HelperPaymentDbContext dbContext)
+        private readonly HelperDbContext _context;
+        public OfferRepository(HelperDbContext dbContext)
         {
             _context = dbContext;
         }
