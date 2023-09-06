@@ -1,7 +1,5 @@
-using Microsoft.OpenApi.Models;
-using HelperPayment.Application;
 using HelperPayment.Core;
-using HelperPayment.Infrastructure;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
