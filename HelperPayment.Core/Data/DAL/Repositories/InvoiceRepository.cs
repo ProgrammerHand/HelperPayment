@@ -1,4 +1,5 @@
-﻿using HelperPayment.Core.Models.Invoice;
+﻿using HelperPayment.Core.Migrations;
+using HelperPayment.Core.Models.Invoice;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelperPayment.Core.Data.DAL.Repositories
