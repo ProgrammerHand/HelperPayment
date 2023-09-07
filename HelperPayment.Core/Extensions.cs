@@ -14,7 +14,7 @@ namespace HelperPayment.Core
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllers();
-
+            services.AddHostedService<BackgroundRabbitMQ>();
             services.AddHttpContextAccessor();
             services.AddSingleton<IClockCustom, ClockCustom>();
             services.AddScoped<IInvoiceRepository, InvoiceRepository>();
