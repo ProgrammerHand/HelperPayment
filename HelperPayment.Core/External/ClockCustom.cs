@@ -1,6 +1,4 @@
-﻿using HelperPayment.Core.External;
-
-namespace HelperPayment.Core
+﻿namespace HelperPayment.Core.External
 {
     public class ClockCustom : IClockCustom
     {

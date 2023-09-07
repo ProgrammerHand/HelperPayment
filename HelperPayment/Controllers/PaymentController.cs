@@ -1,10 +1,5 @@
-﻿using HelperPayment.Core.Abstraction.Commands;
-using HelperPayment.Core.Abstraction.Queries;
-using HelperPayment.Core.Services.Invoice.Commands;
-using HelperPayment.Core.Services.Offer.Queries;
-using Microsoft.AspNetCore.Authorization;
+﻿using HelperPayment.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace HelperPayment.Api.Controllers
 {
@@ -12,26 +7,18 @@ namespace HelperPayment.Api.Controllers
     [Route("api/[controller]")]
     public class PaymentController : ControllerBase
     {
-        private readonly ICommandDispatcher _commandDispatcher;
-        private readonly IQueryDispatcher _queryDispatcher;
+        private readonly IInvoiceService _invoiceServ;
 
-        public PaymentController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
+        public PaymentController(IInvoiceService invoiceServ)
         {
-            _commandDispatcher = commandDispatcher;
-            _queryDispatcher = queryDispatcher;
+            _invoiceServ = invoiceServ
         }
 
         [HttpPost("")]
-        public async Task<ActionResult> IssueInvoice(CreateInvoice command)
+        public async Task<ActionResult> IssueInvoice()
         {
-            await _commandDispatcher.SendAsync(command);
+            await _invoiceServ.CreateInvoiceAsync()
             return Ok();
-        }
-
-        [HttpGet("")]
-        public async Task<ActionResult> GetOffers()
-        {
-            return Ok(await _queryDispatcher.QueryAsync(new GetOffers()));
         }
     }
 }

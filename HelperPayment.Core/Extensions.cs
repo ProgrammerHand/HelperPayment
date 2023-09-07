@@ -1,12 +1,8 @@
-﻿using HelperPayment.Core.Abstraction.Commands;
-using HelperPayment.Core.Abstraction.Events;
-using HelperPayment.Core.Abstraction.Queries;
-using HelperPayment.Core.Data.DAL;
+﻿using HelperPayment.Core.Data.DAL;
 using HelperPayment.Core.Data.DAL.Repositories;
-using HelperPayment.Core.Dispatchers;
 using HelperPayment.Core.External;
 using HelperPayment.Core.Models.Invoice;
-using HelperPayment.Core.Models.Offer;
+using HelperPayment.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,40 +11,15 @@ namespace HelperPayment.Core
 {
     public static class Extensions
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
-            services.Scan(s => s.FromAssemblies(typeof(ICommandHandler<>).Assembly)
-                .AddClasses(c => c.AssignableTo(typeof(ICommandHandler<>)))
-                .AsImplementedInterfaces()
-                .WithScopedLifetime());
-
-            services.Scan(s => s.FromAssemblies(typeof(IEventHandler<>).Assembly)
-                .AddClasses(c => c.AssignableTo(typeof(IEventHandler<>)))
-                .AsImplementedInterfaces()
-                .WithScopedLifetime());
-
-            return services;
-        }
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllers();
-            services.AddSingleton<ICommandDispatcher, CommandDispatcher>();
-            services.AddSingleton<IQueryDispatcher, QueryDispatcher>();
-            services.AddSingleton<IEventDispatcher, EventDispatcher>();
 
             services.AddHttpContextAccessor();
             services.AddSingleton<IClockCustom, ClockCustom>();
-            services.AddScoped<IOfferRepository, OfferRepository>();
             services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-
+            services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddDb(configuration);
-
-            var infrastructureAssembly = typeof(AppOptions).Assembly;
-
-            services.Scan(s => s.FromAssemblies(infrastructureAssembly)
-                .AddClasses(c => c.AssignableTo(typeof(IQueryHandler<,>)))
-                .AsImplementedInterfaces()
-                .WithScopedLifetime());
 
             return services;
         }

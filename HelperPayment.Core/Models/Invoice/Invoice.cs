@@ -2,33 +2,26 @@
 {
     public class Invoice
     {
-        public InvoiceId Id { get; private set; }
-        public DateTime PaymentDate { get; private set; }
-        public double Price { get; private set; }
-        public byte[] RowVersion { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime ModifiedAt { get; private set; }
-        public bool IsDeleted { get; private set; }
-        public DateTime? DeletedAt { get; private set; }
+        public InvoiceId Id { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public double Price { get; set; }
+        public bool Proforma { get; set; } = true;
+        public byte[] RowVersion { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
-        private Invoice()
+        public Invoice()
         {
 
         }
 
-        private Invoice(Offer.Offer offer, InvoiceId id)
+        public Invoice(DateTime paymentDate, double price)
         {
-            Id = id;
-            PaymentDate = (DateTime)offer.PaymentDate;
-            Price = offer.Price;
-
+            Id = Guid.NewGuid();
+            PaymentDate = paymentDate;
+            Price = price;
         }
-
-        public static Invoice CreateInvoice(Offer.Offer offer)
-        {
-            var id = Guid.NewGuid();
-            return new Invoice(offer, id);
-        }
-
     }
 }
