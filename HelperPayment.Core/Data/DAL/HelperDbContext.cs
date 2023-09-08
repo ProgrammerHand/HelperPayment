@@ -1,7 +1,6 @@
 ﻿using HelperPayment.Core.Data.DAL.Exceptions;
 using HelperPayment.Core.External;
 using HelperPayment.Core.Models.Invoice;
-using HelperPayment.Core.Models.Offer;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelperPayment.Core.Data.DAL
@@ -9,7 +8,6 @@ namespace HelperPayment.Core.Data.DAL
     public class HelperDbContext : DbContext
     {
         private readonly IClockCustom _clock;
-        public DbSet<Offer> Offers { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public HelperDbContext(DbContextOptions<HelperDbContext> options, IClockCustom clock) : base(options)
         {

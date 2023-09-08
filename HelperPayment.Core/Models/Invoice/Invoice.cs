@@ -1,6 +1,8 @@
-﻿namespace HelperPayment.Core.Models.Invoice
+﻿using HelperPayment.Core.External;
+
+namespace HelperPayment.Core.Models.Invoice
 {
-    public class Invoice
+    public class Invoice : IDataAudit, ISoftDelete, IRowVersionControl
     {
         public InvoiceId Id { get; set; }
         public DateTime PaymentDate { get; set; }

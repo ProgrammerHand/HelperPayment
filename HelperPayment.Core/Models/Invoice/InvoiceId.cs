@@ -1,4 +1,4 @@
-﻿using HelperPayment.Core.Models.Offer.Exceptions;
+﻿using HelperPayment.Core.Exceptions;
 
 namespace HelperPayment.Core.Models.Invoice
 {

@@ -11,14 +11,7 @@ namespace HelperPayment.Api.Controllers
 
         public PaymentController(IInvoiceService invoiceServ)
         {
-            _invoiceServ = invoiceServ
-        }
-
-        [HttpPost("")]
-        public async Task<ActionResult> IssueInvoice()
-        {
-            await _invoiceServ.CreateInvoiceAsync()
-            return Ok();
+            _invoiceServ = invoiceServ;
         }
     }
 }

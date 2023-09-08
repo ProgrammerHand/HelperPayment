@@ -2,10 +2,8 @@
 using HelperPayment.Core.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HelperPayment.Core.External
 {
@@ -54,18 +52,18 @@ namespace HelperPayment.Core.External
                     basicProperties: null, body);
         }
 
-        public async Task ConsumeEvent()
+        public async Task ConsumeEvent(string channelname = "OfferBus" )
         {
             var consumer = new AsyncEventingBasicConsumer(_channel);
             await Task.Yield();
             consumer.Received += async(model, ea) =>
             {
                 var stream = new MemoryStream(ea.Body.ToArray());
-                var data = await JsonSerializer.DeserializeAsync<InvoiceCreationDto>(stream);
+                InvoiceCreationDto data = await JsonSerializer.DeserializeAsync<InvoiceCreationDto>(stream);
                 if (data is InvoiceCreationDto)
                     await _invoiceServ.CreateInvoiceAsync(data);
             };
-            _channel.BasicConsume(queue: "PaymentBus", autoAck: true, consumer: consumer);
+            _channel.BasicConsume(queue: channelname, autoAck: true, consumer: consumer);
         }
     }
 }
