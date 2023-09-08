@@ -1,4 +1,5 @@
-﻿using HelperPayment.Core.Migrations;
+﻿using HelperPayment.Core.DTO;
+using HelperPayment.Core.Migrations;
 using HelperPayment.Core.Models.Invoice;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +12,14 @@ namespace HelperPayment.Core.Data.DAL.Repositories
         {
             _context = dbContext;
         }
-        public async Task<Invoice> GetByIdAsync(InvoiceId id)
+        public async Task<Invoice> GetByIdAsync(Guid invoiceId)
         {
-            return await _context.Invoices.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Invoices.FirstOrDefaultAsync(x => x.Id == invoiceId);
+        }
+
+        public async Task<List<Invoice>> GetAll() 
+        {
+            return await _context.Invoices.ToListAsync();  
         }
 
         public async Task AddAsync(Invoice invoice)

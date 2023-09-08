@@ -41,7 +41,7 @@ namespace HelperPayment.Core.External
         public async Task DeleteChannel() 
         {
             if(_connection.IsOpen)
-                _connection.Abort();
+                _connection.Close();
         }
 
         public async Task PublishEvent(string data, string routingKey = "PaymentBus") 
@@ -64,6 +64,7 @@ namespace HelperPayment.Core.External
                     await _invoiceServ.CreateInvoiceAsync(data);
             };
             _channel.BasicConsume(queue: channelname, autoAck: true, consumer: consumer);
+            await Task.Delay(1);
         }
     }
 }

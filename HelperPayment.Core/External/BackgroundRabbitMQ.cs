@@ -4,26 +4,24 @@ using Microsoft.Extensions.Hosting;
 
 namespace HelperPayment.Core.External
 {
-    public class BackgroundRabbitMQ : IHostedService
+    public class BackgroundRabbitMQ : BackgroundService
     {
-        private readonly RabbitMqClient client;
+        private readonly RabbitMqClient _client;
 
         public BackgroundRabbitMQ(IServiceProvider serviceProvider)
         {
-            client = new RabbitMqClient(serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IInvoiceService>());
+            _client = new RabbitMqClient(serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IInvoiceService>());
         }
-        
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await client.CreateChannel();
-            await client.CreateQueue("OfferBus");
+            await _client.CreateChannel();
+            await _client.CreateQueue("OfferBus");
             while (true)
             {
-                await client.ConsumeEvent();
+                await _client.ConsumeEvent();
                 await Task.Yield();
             }
         }
-        public Task StopAsync(CancellationToken cancellationToken) => client.DeleteChannel();
     }
 }
