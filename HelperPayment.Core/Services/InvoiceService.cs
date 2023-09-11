@@ -1,7 +1,7 @@
-﻿using Helper.Application.DTO;
-using HelperPayment.Core.DTO;
+﻿using HelperPayment.Core.DTO;
 using HelperPayment.Core.External;
 using HelperPayment.Core.Models.Invoice;
+using HelperPayment.Shared.Events;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 
@@ -20,7 +20,7 @@ namespace HelperPayment.Core.Services
             _serviceProvider = serviceProvider;
         }
 
-        public async Task CreateInvoiceAsync(InvoiceCreationDto dto)
+        public async Task CreateInvoiceAsync(InvoiceCreatedEvent dto)
         {
             var invoice = new Invoice(dto);
             await _invoiceRepo.AddAsync(invoice);
@@ -34,7 +34,7 @@ namespace HelperPayment.Core.Services
             var client = new RabbitMqClient(_serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IInvoiceService>());
             await client.CreateChannel();
             await client.CreateQueue();
-            var dto = new InvoicePayment() { OfferId = invoice.OfferId };
+            var dto = new InvoicePaidEvent() { OfferId = invoice.OfferId };
             var serialized = JsonSerializer.Serialize(dto);
             await client.PublishEvent(serialized);
             await client.DeleteChannel();
