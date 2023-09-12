@@ -1,26 +1,26 @@
-﻿using HelperPayment.Core.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace HelperPayment.Core.External
 {
     public class BackgroundRabbitMQ : BackgroundService
     {
-        private readonly RabbitMqClient _client;
+        private readonly IServiceProvider _serviceProvider;
 
         public BackgroundRabbitMQ(IServiceProvider serviceProvider)
         {
-            _client = new RabbitMqClient(serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IInvoiceService>());
+            _serviceProvider = serviceProvider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await _client.CreateChannel();
-            await _client.CreateQueue("OfferBus");
+            using var scope = _serviceProvider.CreateScope();
             while (true)
             {
-                await _client.ConsumeEvent();
-                await Task.Yield();
+                var client = scope.ServiceProvider.GetRequiredService<IRabbitMqClient>();
+                await client.ConsumeEvent("OfferBus");
+                //await Task.Yield();
             }
         }
     }

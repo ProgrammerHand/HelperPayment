@@ -19,6 +19,7 @@ namespace HelperPayment.Core
             services.AddSingleton<IClockCustom, ClockCustom>();
             services.AddScoped<IInvoiceRepository, InvoiceRepository>();
             services.AddScoped<IInvoiceService, InvoiceService>();
+            services.AddScoped<IRabbitMqClient, RabbitMqClient>();
             services.AddDb(configuration);
 
             return services;

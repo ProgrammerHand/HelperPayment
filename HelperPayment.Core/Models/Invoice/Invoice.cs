@@ -1,6 +1,7 @@
 ﻿using HelperPayment.Core.DTO;
 using HelperPayment.Core.External;
 using HelperPayment.Core.Models.Invoice.ValueObjects;
+using HelperPayment.Shared.Events;
 
 namespace HelperPayment.Core.Models.Invoice
 {
@@ -27,7 +28,7 @@ namespace HelperPayment.Core.Models.Invoice
 
         }
 
-        public Invoice(InvoiceCreationDto dto)
+        public Invoice(InvoiceCreatedEvent dto)
         {
             Id = Guid.NewGuid();
             PaymentDate = dto.PaymentDate;

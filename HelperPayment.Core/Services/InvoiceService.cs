@@ -2,22 +2,19 @@
 using HelperPayment.Core.External;
 using HelperPayment.Core.Models.Invoice;
 using HelperPayment.Shared.Events;
-using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 
 namespace HelperPayment.Core.Services
 {
     public sealed class InvoiceService : IInvoiceService
     {
-        private readonly IClockCustom _clock;
         private readonly IInvoiceRepository _invoiceRepo;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IRabbitMqClient client;
 
-        public InvoiceService(IClockCustom clock, IInvoiceRepository invoiceRepo, IServiceProvider serviceProvider)
+        public InvoiceService(IInvoiceRepository invoiceRepo, IRabbitMqClient rabbitMqClien)
         {
-            _clock = clock;
             _invoiceRepo = invoiceRepo;
-            _serviceProvider = serviceProvider;
+            client = rabbitMqClien;
         }
 
         public async Task CreateInvoiceAsync(InvoiceCreatedEvent dto)
@@ -31,13 +28,9 @@ namespace HelperPayment.Core.Services
             var invoice = await _invoiceRepo.GetByIdAsync(InvoiceId);
             invoice.Paid = Models.Invoice.ValueObjects.PaymentStatus.paid;
             await _invoiceRepo.UpdateAsync(invoice);
-            var client = new RabbitMqClient(_serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IInvoiceService>());
-            await client.CreateChannel();
-            await client.CreateQueue();
             var dto = new InvoicePaidEvent() { OfferId = invoice.OfferId };
             var serialized = JsonSerializer.Serialize(dto);
-            await client.PublishEvent(serialized);
-            await client.DeleteChannel();
+            await client.PublishEvent(serialized, "PaymentBus");
         }
 
         public async Task<List<InvoiceDto>> GetAll()
