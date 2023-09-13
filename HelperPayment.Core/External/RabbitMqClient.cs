@@ -1,10 +1,8 @@
-﻿using HelperPayment.Core.DTO;
-using HelperPayment.Core.Services;
+﻿using HelperPayment.Core.Services;
 using HelperPayment.Shared.Events;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System;
 using System.Text;
 using System.Text.Json;
 
