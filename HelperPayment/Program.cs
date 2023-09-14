@@ -37,12 +37,11 @@ builder.Services.AddSwaggerGen(x =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
+app.UseInfrastructure();
+
     app.UseSwagger();
     app.UseSwaggerUI();
-//}
+
 
 app.UseHttpsRedirection();
 
