@@ -14,8 +14,6 @@ namespace HelperPayment.Core.External
         private readonly IServiceProvider _serviceProvider;
         private readonly ConnectionFactory _factory;
         private static IConnection? _connection;
-        private static IModel _consumeChannel;
-        private static IModel _publishChannel;
 
         public RabbitMqClient(IServiceProvider serviceProvider, IConfiguration configuration)
         {
@@ -39,8 +37,6 @@ namespace HelperPayment.Core.External
             }
             if (_connection is null)
                 _connection = _factory.CreateConnection();
-            _consumeChannel = _connection.CreateModel();
-            _publishChannel = _connection.CreateModel();
 
         }
 
@@ -55,29 +51,34 @@ namespace HelperPayment.Core.External
 
         public async Task PublishEvent(string data, string routingKey = "PaymentBus") 
         {
-
-            await CreateQueue(_publishChannel, routingKey);
-            var body = Encoding.UTF8.GetBytes(data);
-            _publishChannel.BasicPublish(exchange: "",
-                                        routingKey: routingKey,
-                                        basicProperties: null, body);
+            using (var channel = _connection.CreateModel())
+            {
+                await CreateQueue(channel, routingKey);
+                var body = Encoding.UTF8.GetBytes(data);
+                channel.BasicPublish(exchange: "",
+                                            routingKey: routingKey,
+                                            basicProperties: null, body);
+            }
         }
 
         public async Task ConsumeEvent(string queueName = "OfferBus" )
         {
-            await CreateQueue(_consumeChannel, queueName);
-            var consumer = new AsyncEventingBasicConsumer(_consumeChannel);
-            //await Task.Yield();
-            consumer.Received += async (model, ea) =>
+            using (var channel = _connection.CreateModel())
             {
-                var stream = new MemoryStream(ea.Body.ToArray());
-                InvoiceCreatedEvent data = await JsonSerializer.DeserializeAsync<InvoiceCreatedEvent>(stream);
-                if (data is InvoiceCreatedEvent)
-                    using (var scope = _serviceProvider.CreateScope())
-                        await scope.ServiceProvider.GetRequiredService<IInvoiceService>().CreateInvoiceAsync(data);
-            };
-            _consumeChannel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
-            await Task.Delay(1);
+                await CreateQueue(channel, queueName);
+                var consumer = new AsyncEventingBasicConsumer(channel);
+                //await Task.Yield();
+                consumer.Received += async (model, ea) =>
+                {
+                    var stream = new MemoryStream(ea.Body.ToArray());
+                    InvoiceCreatedEvent data = await JsonSerializer.DeserializeAsync<InvoiceCreatedEvent>(stream);
+                    if (data is InvoiceCreatedEvent)
+                        using (var scope = _serviceProvider.CreateScope())
+                            await scope.ServiceProvider.GetRequiredService<IInvoiceService>().CreateInvoiceAsync(data);
+                };
+                channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+                await Task.Delay(1);
+            }
             //await Task.Delay(100);
         }
     }
