@@ -11,7 +11,7 @@ namespace HelperPayment.Core.Models.Invoice
         public Guid OfferId { get; set; }
         public DateTime PaymentDate { get; set; }
         public DateTime RealisationStart { get; set; }
-        public DateTime RealisationEnd { get; set; }
+        public DateTime? RealisationEnd { get; set; }
         public double Price { get; set; }
         public bool Proforma { get; set; } = true;
         public PaymentStatus Paid { get; set; } = PaymentStatus.awaits_payment;
